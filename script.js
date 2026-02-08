@@ -52,3 +52,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Custom Cursor Logic
+const cursor = document.createElement('div');
+cursor.classList.add('custom-cursor');
+document.body.appendChild(cursor);
+
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+});
+
+// Grow cursor on links
+document.querySelectorAll('a, .btn, .project-card').forEach(link => {
+    link.addEventListener('mouseenter', () => cursor.classList.add('cursor-grow'));
+    link.addEventListener('mouseleave', () => cursor.classList.remove('cursor-grow'));
+});
