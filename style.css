@@ -150,6 +150,9 @@ nav a:hover {
     transition: all var(--transition-speed);
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out; /* Keeps the movement buttery smooth */
+    will-change: transform;
 }
 
 .project-card:hover {
@@ -478,4 +481,107 @@ footer {
     height: 50px;
     background: rgba(30, 144, 255, 0.1);
     border-color: var(--color-primary);
+}
+
+/* --- Core 3D Container --- */
+.cube-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1; /* Above the blurred blobs, below the text */
+    perspective: 1200px;
+}
+
+/* Shared Cube Logic */
+.cube-container {
+    position: absolute;
+    transform-style: preserve-3d;
+}
+
+.cube {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.face {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(30, 144, 255, 0.03); 
+    border: 1.5px solid var(--color-primary);
+    box-shadow: 0 0 15px rgba(30, 144, 255, 0.3);
+}
+
+/* Positioning the faces (Universal for all cubes) */
+.front  { transform: translateZ(30px); }
+.back   { transform: rotateY(180deg) translateZ(30px); }
+.right  { transform: rotateY(90deg) translateZ(30px); }
+.left   { transform: rotateY(-90deg) translateZ(30px); }
+.top    { transform: rotateX(90deg) translateZ(30px); }
+.bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+/* --- Individual Cube Positioning & Animations --- */
+
+/* Cube 1: Large, slow rotation, top left */
+.cube-1 {
+    top: 15%;
+    left: 8%;
+    transform: scale(1.5);
+}
+.cube-1 .cube {
+    animation: rotateSlow 25s infinite linear, floatDrift 8s infinite ease-in-out;
+}
+
+/* Cube 2: Small, faster rotation, middle right */
+.cube-2 {
+    top: 45%;
+    right: 10%;
+    transform: scale(0.7);
+}
+.cube-2 .cube {
+    animation: rotateFast 12s infinite linear, floatDrift 6s infinite ease-in-out alternate;
+}
+
+/* Cube 3: Medium, steady rotation, bottom left */
+.cube-3 {
+    bottom: 15%;
+    left: 12%;
+    transform: scale(1);
+}
+.cube-3 .cube {
+    animation: rotateMedium 18s infinite linear, floatDrift 10s infinite ease-in-out;
+}
+
+/* --- Animations --- */
+
+@keyframes rotateSlow {
+    from { transform: rotateX(0deg) rotateY(0deg); }
+    to { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes rotateMedium {
+    from { transform: rotateX(0deg) rotateZ(0deg); }
+    to { transform: rotateX(360deg) rotateZ(360deg); }
+}
+
+@keyframes rotateFast {
+    from { transform: rotateY(0deg) rotateZ(0deg); }
+    to { transform: rotateY(360deg) rotateZ(360deg); }
+}
+
+@keyframes floatDrift {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-30px); }
+}
+
+/* --- Hide Cubes on Mobile (Optional, for better performance) --- */
+@media (max-width: 768px) {
+    .cube-background {
+        display: none;
+    }
 }
